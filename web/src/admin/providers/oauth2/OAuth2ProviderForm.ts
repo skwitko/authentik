@@ -364,7 +364,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used when authorizing this provider.`}
+                            ${t`Flow used when logging out of this provider.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
