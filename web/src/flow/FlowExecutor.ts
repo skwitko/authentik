@@ -99,12 +99,13 @@ export class FlowExecutor extends Interface implements StageHost {
                 --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
             }
-            .ak-hidden {
-                display: none;
-            }
             :host {
                 position: relative;
             }
+            .pf-c-login__main {
+                view-transition-name: ak-flow-container;
+            }
+
             .pf-c-drawer__content {
                 background-color: transparent;
             }
@@ -163,6 +164,39 @@ export class FlowExecutor extends Interface implements StageHost {
         return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
     }
 
+    transitionChallenge(data: ChallengeTypes): void {
+        // get old content heights
+        const child = this.shadowRoot?.querySelector(".pf-c-login__main");
+        let oldHeight = 0;
+        if (child) {
+            oldHeight = child.getBoundingClientRect().height;
+        }
+        const transition = document.startViewTransition(() => {
+            this.challenge = data;
+            if (this.challenge.flowInfo) {
+                this.flowInfo = this.challenge.flowInfo;
+            }
+        });
+        // transition.ready.then(() => {
+        //     const child = this.shadowRoot?.querySelector(".pf-c-login__main");
+        //     const newHeight = child.getBoundingClientRect().height;
+        //     document.documentElement.animate(
+        //         [
+        //             {
+        //                 height: `${oldHeight}px`,
+        //             },
+        //             {
+        //                 height: `${newHeight}px`,
+        //             },
+        //         ],
+        //         {
+        //             duration: 50,
+        //             pseudoElement: "::view-transition-new(ak-flow-container)",
+        //         },
+        //     );
+        // });
+    }
+
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
@@ -184,11 +218,8 @@ export class FlowExecutor extends Interface implements StageHost {
                         }),
                     );
                 }
-                this.challenge = data;
-                if (this.challenge.flowInfo) {
-                    this.flowInfo = this.challenge.flowInfo;
-                }
-                if (this.challenge.responseErrors) {
+                this.transitionChallenge(data);
+                if (data.responseErrors) {
                     return false;
                 }
                 return true;
@@ -220,10 +251,7 @@ export class FlowExecutor extends Interface implements StageHost {
                         }),
                     );
                 }
-                this.challenge = challenge;
-                if (this.challenge.flowInfo) {
-                    this.flowInfo = this.challenge.flowInfo;
-                }
+                this.transitionChallenge(challenge);
             })
             .catch((e: Error | ResponseError) => {
                 // Catch JSON or Update errors

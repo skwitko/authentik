@@ -22,6 +22,7 @@
         "target": "esnext",
         "module": "esnext",
         "moduleResolution": "node",
+        "typeRoots": ["./types"],
         "lib": [
             "ES5",
             "ES2015",
