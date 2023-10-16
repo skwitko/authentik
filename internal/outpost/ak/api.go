@@ -160,10 +160,6 @@ func (a *APIController) AddRefreshHandler(handler func()) {
 	a.refreshHandlers = append(a.refreshHandlers, handler)
 }
 
-func (a *APIController) AddWSHandler(handler WSHandler) {
-	a.wsHandlers = append(a.wsHandlers, handler)
-}
-
 func (a *APIController) Token() string {
 	return a.token
 }
@@ -188,7 +184,7 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getWebsocketArgs() map[string]interface{} {
+func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
 		"version":   constants.VERSION,
 		"buildHash": constants.BUILD("tagged"),
