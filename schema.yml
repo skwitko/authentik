@@ -16081,7 +16081,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this rac provider.
+        description: A unique integer value identifying this RAC Provider.
         required: true
       tags:
       - providers
@@ -16114,7 +16114,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this rac provider.
+        description: A unique integer value identifying this RAC Provider.
         required: true
       tags:
       - providers
@@ -16153,7 +16153,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this rac provider.
+        description: A unique integer value identifying this RAC Provider.
         required: true
       tags:
       - providers
@@ -16191,7 +16191,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this rac provider.
+        description: A unique integer value identifying this RAC Provider.
         required: true
       tags:
       - providers
@@ -16221,7 +16221,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this rac provider.
+        description: A unique integer value identifying this RAC Provider.
         required: true
       tags:
       - providers
@@ -17585,7 +17585,7 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
-          * `authentik_enterprise_providers_rac.racprovider` - rac provider
+          * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
         required: true
       - in: query
         name: object_pk
@@ -17875,7 +17875,7 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
-          * `authentik_enterprise_providers_rac.racprovider` - rac provider
+          * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
         required: true
       - in: query
         name: object_pk
@@ -30985,7 +30985,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
-            * `authentik_enterprise_providers_rac.racprovider` - rac provider
+            * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
       required:
       - bound_to
       - component
@@ -31183,7 +31183,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
-            * `authentik_enterprise_providers_rac.racprovider` - rac provider
+            * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
       required:
       - name
     EventRequest:
@@ -33572,7 +33572,7 @@ components:
         * `authentik_core.application` - Application
         * `authentik_core.token` - Token
         * `authentik_enterprise.license` - License
-        * `authentik_enterprise_providers_rac.racprovider` - rac provider
+        * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -36652,7 +36652,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
-            * `authentik_enterprise_providers_rac.racprovider` - rac provider
+            * `authentik_enterprise_providers_rac.racprovider` - RAC Provider
     PatchedEventRequest:
       type: object
       description: Event Serializer
