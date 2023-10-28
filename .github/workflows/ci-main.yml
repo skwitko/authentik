@@ -80,6 +80,12 @@ jobs:
         uses: ./.github/actions/setup
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
+      - name: run tests
+        env:
+          # Test in the main database that we just migrated from the previous stable version
+          AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
+        run:
+          poetry run make test
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
