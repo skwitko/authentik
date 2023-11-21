@@ -36,6 +36,7 @@ class EventSerializer(ModelSerializer):
             "created",
             "expires",
             "tenant",
+            "batch_id",
         ]
 
 

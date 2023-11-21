@@ -107,22 +107,28 @@ def notification_transport(
     """Send notification over specified transport"""
     self.save_on_success = False
     try:
-        event = Event.objects.filter(pk=event_pk).first()
-        if not event:
-            return
-        user = User.objects.filter(pk=user_pk).first()
-        if not user:
-            return
-        trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
-        if not trigger:
-            return
-        notification = Notification(
-            severity=trigger.severity, body=event.summary, event=event, user=user
-        )
         transport = NotificationTransport.objects.filter(pk=transport_pk).first()
         if not transport:
             return
-        transport.send(notification)
+
+        event = Event.objects.filter(pk=event_pk).first()
+        if not event:
+            return
+
+        if transport.enable_batching:
+            transport.process_batch(event)
+        else:
+            user = User.objects.filter(pk=user_pk).first()
+            if not user:
+                return
+            trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
+            if not trigger:
+                return
+            notification = Notification(
+                severity=trigger.severity, body=event.summary, event=event, user=user
+            )
+            transport.send_notification(notification)
+
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
     except (NotificationTransportError, PropertyMappingExpressionException) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

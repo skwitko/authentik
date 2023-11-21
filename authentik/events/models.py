@@ -160,6 +160,51 @@ class EventManager(Manager):
         return self.get_queryset().get_events_per(time_since, extract, data_points)
 
 
+class EventBatch(models.Model):
+    """Model to store information about batches of events."""
+
+    batch_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    event_type = models.CharField(max_length=255)
+    start_time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+    event_count = models.IntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True)
+    max_batch_size = models.IntegerField(default=10)
+    batch_timeout = models.IntegerField(default=60)  # Timeout in seconds
+
+    @staticmethod
+    def get_or_create_batch(action):
+        """Get or create a batch for a given action."""
+        existing_batch = EventBatch.objects.filter(event_type=action, end_time__isnull=True).first()
+        if existing_batch:
+            return existing_batch
+        return EventBatch.objects.create(event_type=action)
+
+    def is_ready_to_send(self):
+        """Check if the batch is ready to be sent."""
+        time_elapsed = now() - self.last_updated
+        return self.event_count >= self.max_batch_size or time_elapsed >= timedelta(
+            seconds=self.batch_timeout
+        )
+
+    def add_event(self, event):
+        """Add an event to the batch."""
+        self.event_count += 1
+        self.save()
+
+    def create_batch_summary(self):
+        """Create a summary message for the batch."""
+        return f"Batched Event Summary: {self.event_type} occurred {self.event_count} \
+            times between {self.start_time} and {now()}"
+
+    def process_batch(self):
+        """Process the batch and check if it's ready to send."""
+        if self.is_ready_to_send():
+            summary_message = self.create_batch_summary()
+            return summary_message
+        return None
+
+
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -174,6 +219,8 @@ class Event(SerializerModel, ExpiringModel):
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
+
+    batch_id = models.UUIDField(null=True, blank=True)
 
     objects = EventManager()
 
@@ -196,8 +243,10 @@ class Event(SerializerModel, ExpiringModel):
             current = currentframe()
             parent = current.f_back
             app = parent.f_globals["__name__"]
+
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
-        event = Event(action=action, app=app, context=cleaned_kwargs)
+        batch = EventBatch.get_or_create_batch(action)
+        event = Event(action=action, app=app, context=cleaned_kwargs, batch_id=batch.batch_id)
         return event
 
     def set_user(self, user: User) -> "Event":
@@ -319,7 +368,17 @@ class NotificationTransport(SerializerModel):
         ),
     )
 
+    enable_batching = models.BooleanField(default=False)
+    batch_timeout = models.IntegerField(default=60)  # Timeout in seconds
+    max_batch_size = models.IntegerField(default=10)
+
     def send(self, notification: "Notification") -> list[str]:
+        """Send a batched notification or a single notification"""
+        if self.enable_batching:
+            return self.process_batch(notification)
+        return self.send_notification(notification)
+
+    def send_notification(self, notification: "Notification") -> list[str]:
         """Send notification to user, called from async task"""
         if self.mode == TransportMode.LOCAL:
             return self.send_local(notification)
@@ -330,6 +389,25 @@ class NotificationTransport(SerializerModel):
         if self.mode == TransportMode.EMAIL:
             return self.send_email(notification)
         raise ValueError(f"Invalid mode {self.mode} set")
+
+    def process_batch(self, event: Event) -> list[str]:
+        """Process an event for batching and send batch notification"""
+        batch = EventBatch.get_or_create_batch(event.action)
+        batch.add_event(event)
+
+        summary_message = batch.process_batch()
+        if summary_message:
+            batch.delete()
+            batch_notification = Notification(
+                severity=NotificationSeverity.NOTICE,
+                body=summary_message,
+                event=None,
+                user=None,
+            )
+
+            return self.send_notification(batch_notification)
+
+        return []
 
     def send_local(self, notification: "Notification") -> list[str]:
         """Local notification delivery"""
