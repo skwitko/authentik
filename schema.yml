@@ -28279,7 +28279,7 @@ components:
           readOnly: true
         geo_ip:
           type: object
-          description: Get parsed user agent
+          description: Get GeoIP Data
           properties:
             continent:
               type: string
@@ -28301,6 +28301,24 @@ components:
           - long
           nullable: true
           readOnly: true
+        asn:
+          type: object
+          description: Get ASN Data
+          properties:
+            asn:
+              type: integer
+            as_org:
+              type: string
+              nullable: true
+            network:
+              type: string
+              nullable: true
+          required:
+          - as_org
+          - asn
+          - network
+          nullable: true
+          readOnly: true
         user:
           type: integer
         last_ip:
@@ -28315,6 +28333,7 @@ components:
           type: string
           format: date-time
       required:
+      - asn
       - current
       - geo_ip
       - last_ip
@@ -29286,6 +29305,7 @@ components:
       enum:
       - can_save_media
       - can_geo_ip
+      - can_asn
       - can_impersonate
       - can_debug
       - is_enterprise
@@ -29293,6 +29313,7 @@ components:
       description: |-
         * `can_save_media` - Can Save Media
         * `can_geo_ip` - Can Geo Ip
+        * `can_asn` - Can Asn
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
         * `is_enterprise` - Is Enterprise
@@ -39687,6 +39708,9 @@ components:
         ip:
           type: string
         ip_geo_data:
+          type: object
+          additionalProperties: {}
+        ip_asn_data:
           type: object
           additionalProperties: {}
         score:
