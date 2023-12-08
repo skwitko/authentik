@@ -10,7 +10,6 @@ from structlog.stdlib import get_logger
 
 from authentik.events.enrich.asn import ASN_ENRICHER
 from authentik.events.enrich.geoip import GEOIP_ENRICHER
-from authentik.lib.utils.http import get_client_ip
 
 if TYPE_CHECKING:
     from authentik.core.models import User
@@ -40,13 +39,10 @@ class PolicyRequest:
     def set_http_request(self, request: HttpRequest):  # pragma: no cover
         """Load data from HTTP request, including geoip when enabled"""
         self.http_request = request
-        client_ip = get_client_ip(request)
-        if not client_ip:
-            return
         if GEOIP_ENRICHER.enabled:
-            self.context["geoip"] = GEOIP_ENRICHER.city(client_ip)
+            self.context.update(GEOIP_ENRICHER.enrich_context(request))
         if ASN_ENRICHER.enabled:
-            self.context["asn"] = ASN_ENRICHER.asn(client_ip)
+            self.context.update(ASN_ENRICHER.enrich_context(request))
 
     @property
     def should_cache(self) -> bool:
