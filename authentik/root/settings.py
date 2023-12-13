@@ -216,7 +216,7 @@ MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 MIDDLEWARE = [
     "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
-    "authentik.root.middleware.SessionMiddleware",
+    "authentik.stages.user_login.middleware.BoundSessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.tenants.middleware.TenantMiddleware",
