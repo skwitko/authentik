@@ -6033,8 +6033,6 @@
                 },
                 "cgw_endpoint": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "Cgw endpoint"
                 }
