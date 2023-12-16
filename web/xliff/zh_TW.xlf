@@ -7966,6 +7966,48 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
 </trans-unit>
+<trans-unit id="s7962d2ba63aef751">
+  <source>authentik Enterprise eu-central-1</source>
+</trans-unit>
+<trans-unit id="s43f9c52102d79ffa">
+  <source>Stage used to configure a mobile-based authenticator. This stage should be used for configuration flows.</source>
+</trans-unit>
+<trans-unit id="sc4e1bef45e5723c7">
+  <source>User decision mode</source>
+</trans-unit>
+<trans-unit id="s04958d5c4ed33f38">
+  <source>Accept/Deny</source>
+</trans-unit>
+<trans-unit id="s14fa6ba620a74517">
+  <source>Number matching (2 digit numbers)</source>
+</trans-unit>
+<trans-unit id="sbe451320474ae35e">
+  <source>Number matching (3 digit numbers)</source>
+</trans-unit>
+<trans-unit id="sa167934749bdf0ed">
+  <source>Cloud Gateway endpoint</source>
+</trans-unit>
+<trans-unit id="s5f2ea8f4e31e3e4f">
+  <source>Custom Endpoint</source>
+</trans-unit>
+<trans-unit id="sc2226a67f44b32a6">
+  <source>Custom Cloud Gateway endpoint</source>
+</trans-unit>
+<trans-unit id="sd1100ae64e685db1">
+  <source>Mobile Authenticators</source>
+</trans-unit>
+<trans-unit id="sc23cd9aed9f860ae">
+  <source>Sending push notification</source>
+</trans-unit>
+<trans-unit id="s5bf76932fc2ddb74">
+  <source>Push-notifications</source>
+</trans-unit>
+<trans-unit id="s02f9c54ef7ea4b1c">
+  <source>Mobile stage is in preview.</source>
+</trans-unit>
+<trans-unit id="s5e3eaadab779ef89">
+  <source>Hosted cloud gateways require authentik Enterprise.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
